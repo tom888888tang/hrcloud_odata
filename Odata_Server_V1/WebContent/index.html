@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+
+<script src="jquery-2.2.3.min.js"></script>
+<body>
+<table>
+    <thead>
+        <tr>
+            <td>id</td>
+            <td>name</td>
+            <td>type</td>
+            <td>status</td>
+        </tr>
+    </thead>
+    <tbody></tbody>
+</table>
+<input id="json" type="button" value="json" />
+<input id="jsonp" type="button" value="jsonp" />
+</body>
+
+<script>
+$(function () {
+    $("#json").click(function () {
+    	//headers = { 'Content-Type': 'application/json' }
+$.ajax({
+    type: "get",
+    dataType: "json",
+    //http://120.27.144.171:8080/Odata/Cloud_Hr.svc/Customers
+    //http://localhost:8080/Odata_Server_V1/Cloud_Hr.svc/Customers
+    url: "http://120.27.144.171:8080/Odata/Cloud_Hr.svc/Customers",
+    beforeSend: function(request) {
+        request.setRequestHeader('Content-Type', 'application/json');
+    },
+    success: function (msg) {
+        var str = "<tr><td>" + "json" + "</td></tr>";
+        for (x in msg) {
+        	for (var i=0,len=msg[x].results.length; i<len; i++) {
+
+                str += "<tr><td>" + msg[x].results[i].Customer_id + "</td><td>" +
+                msg[x].results[i].Customer_name + "</td><td>" + msg[x].results[i].Customer_type +
+                  "</td><td>" + msg[x].results[i].Customer_status + "</td></tr>";
+                
+        	}
+   }
+        $("tbody").append(str);
+    }
+});
+    });
+
+    $("#jsonp").click(function () {
+        var serviceRoot = 'http://120.27.144.171:8080/Odata/Cloud_Hr.svc/Customers';
+        function jsonpcallback(msg) {
+        	var str = "<tr><td>" + "json" + "</td></tr>";
+
+            for (var i=0,len=msg.length; i<len; i++) {
+                str += "<tr><td>" + msg[i].Customer_id + "</td><td>" + msg[i].Customer_name + "</td><td>" + msg[i].Customer_type + "</td><td>" + msg[i].Customer_status + "</td></tr>";
+            }
+        }
+     
+        var s = document.createElement('script');
+        s.src = serviceRoot;
+        document.body.appendChild(s);
+
+
+        });
+    
+});
+
+</script>
+</html>
